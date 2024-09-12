@@ -15,18 +15,25 @@ async  function getPosts(){
 
     let button = document.createElement('button');
     button.innerHTML = 'Like';
+    button.addEventListener('click',() => {
+      addLike(post.id);
+      let likeCount = getLikesFromId(post.id);
+      let articleElement = document.querySelector('#post_' + post.id);
+      articleElement.querySelector('small').innerHTML = likeCount + ' likes';
+    })
 
     let small = document.createElement('small');
     let likeCount = getLikesFromId(post.id)
-    small.innerHTML = likeCount + ' liks'
+    small.innerHTML = likeCount + ' likes'
 
     let article = document.createElement('article');
-    article.appendChild(h2)
-    article.appendChild(p)
-    article.appendChild(button)
-    article.appendChild(small)
+    article.setAttribute('id', 'post_' + post.id)
+    article.appendChild(h2);
+    article.appendChild(p);
+    article.appendChild(button);
+    article.appendChild(small);
   
-    postSection.appendChild(article)
+    postSection.appendChild(article);
   
 
 
@@ -47,6 +54,20 @@ async  function getPosts(){
    if(!postLike) return 0;
 
    return postLike.count;
+ }
+ function addLike(id) {
+  let likesString = localStorage.getItem('likes');
+  if(!likesString){
+    likesString = "[]";
+  }
+  let likes = JSON.parse(likesString)
+  let index = likes.findIndex(item => item.id === id);
+  if(index >-1){
+    likes[index].count++;
+  }else{
+    likes.push({id: id, count: 1})
+  }
+  localStorage.setItem('likes', JSON.stringify(likes))
  }
  
   getPosts();
